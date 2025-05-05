@@ -80,9 +80,9 @@ This project was developed by a dedicated team of contributors:
 - **Sandeep Begad**: NVIDIA Vision Model Integration & Image Encoding 
 
 ## Images
-![Screenshot 2](assets\Images\processflow.png)
-![Screenshot 1](assets\Images\productSimilarity.png)
-![Screenshot 1](assets\Images\escalation.png)
+![Screenshot 2](assets/Images/processflow.png)
+![Screenshot 1](assets/Images/productSimilarity.png)
+![Screenshot 1](assets/Images/escalation.png)
 
 ## Implementation
 Our project is composed of the following core modules:
