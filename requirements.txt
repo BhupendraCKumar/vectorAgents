@@ -1,0 +1,16 @@
+flask
+flask-cors
+python-dotenv
+openai
+azure.core
+requests
+langchain
+langchain-openai
+langchain-community
+langgraph
+pandas
+opencv-python
+py3dbp
+openrouteservice
+ortools
+msgpack
