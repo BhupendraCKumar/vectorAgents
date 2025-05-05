@@ -1,5 +1,4 @@
-# Team Name 
-**vectorAgents**
+# TEAM : vectorAgents
 
 ## Overview
 Welcome to our project submission for the Agentic AI Incubation Challenge. This repository showcases our end-to-end implementation of an AI-powered sustainability optimization assistant tailored for consumer goods, retail, and logistics domains. The assistant autonomously addresses operational challenges in carbon footprint reduction, waste minimization, and energy efficiency — using advanced agentic design patterns and cutting-edge technologies such as Microsoft Azure OpenAI and NVIDIA Vision APIs, LangGraph for orchestration.
