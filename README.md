@@ -2,11 +2,18 @@
 **vectorAgents**
 
 ## Overview
-Welcome to our project submission for the Agentic AI Incubation Challenge. This repository showcases our end-to-end implementation of an AI-powered sustainability optimization assistant tailored for consumer goods, retail, and logistics domains. The assistant autonomously addresses operational challenges in carbon footprint reduction, waste minimization, and energy efficiency — using advanced agentic design patterns and cutting-edge technologies such as Microsoft Azure OpenAI and NVIDIA Vision APIs.
+Welcome to our project submission for the Agentic AI Incubation Challenge. This repository showcases our end-to-end implementation of an AI-powered sustainability optimization assistant tailored for consumer goods, retail, and logistics domains. The assistant autonomously addresses operational challenges in carbon footprint reduction, waste minimization, and energy efficiency — using advanced agentic design patterns and cutting-edge technologies such as Microsoft Azure OpenAI and NVIDIA Vision APIs, LangGraph for orchestration.
+
+In small to medium scale even in case of few big manifacturing industries, it's a common scenario to take a few sample out of the production batch and check the ration of good quality and bad quality, it's hard to quality check entire batch as it's done manually. 
+
+If defective ratio is higher than the set threshold, entire batch is thrown away.
+At times products are returned from the vendors as it did not met the quality. Leading to higher carbon emmission through more production using raw materials to meet the demand, transportation fuel burning etc.
+
+### We are presenting a AGENTIC AI solution which handles the above challenges
 
 Through modular tools and autonomous agents, our system is capable of:
 - Identifying and reducing high-emission routes,
-- Monitoring parcel quality through AI vision,
+- Monitoring product quality through AI vision,
 - Suggesting space-efficient container packing to reduce material waste and emissions.
 
 ## Explanation
@@ -14,17 +21,17 @@ Our solution aligns with the challenge use case: **AI-Powered Sustainability Opt
 
 The core functionality includes:
 
-- **Route Optimizer**  
-  Uses **Azure OpenAI** to classify user intent and apply **Traveling Salesman Problem (TSP)** algorithms to suggest optimal delivery paths — helping reduce total travel distance and carbon emissions.
+- **Route optimizer**  
+  Uses **Azure OpenAI** to classify user intent and apply **Traveling Salesman Problem (TSP)** algorithms to suggest optimal delivery paths — helping reduce total travel distance and carbon emissions. Input: Addresses of locations and parcel dimensions. Using **openrouteservice** API as a tool, we compute the road distance of each address pari wise, considering first address as the start point. On top of distance matrix TSP is applied to find the optimized route.
 
 - **Parcel Packing Optimizer**  
-  Utilizes the **py3dbp** library to simulate **3D bin packing**, efficiently arranging parcels to reduce unused space in containers and cut down on packaging material waste.
+  Utilizes the **py3dbp** library to simulate **3D bin packing**, efficiently arranging parcels to reduce unused space in containers and cut down on packaging material waste. It also considers the optimised route from previous computation.
 
 - **Carbon Emission Estimator**  
   Calculates estimated carbon footprint of both naive and optimized routes using fuel efficiency metrics — supporting **real-time emission tracking and reduction decisions**.
 
 - **Vision Quality Inspector**  
-  Leverages **NVIDIA’s Llama-4 Maverick Vision model** to compare product images and flag damaged or defective items, preventing returns and the waste they generate.
+  Leverages **NVIDIA’s Llama-4 Maverick Vision model** to compare product images and flag damaged or defective items, preventing returns and the waste they generate. We pass 2 images, i.e., first one is considered as good quality image and second as the one to be mapped with good quality. If changes in edges or color is significant the we mark it as rejected.
 
 - **Modular Agent Flow**  
   Implements a plug-and-play architecture where agents can work autonomously or in collaboration based on user input and task complexity.
@@ -73,8 +80,9 @@ This project was developed by a dedicated team of contributors:
 - **Sandeep Begad**: NVIDIA Vision Model Integration & Image Encoding 
 
 ## Images
-![Screenshot 1](path/to/screenshot1.png)
-![Screenshot 2](path/to/screenshot2.png)
+![Screenshot 2](assets\Images\processflow.png)
+![Screenshot 1](assets\Images\productSimilarity.png)
+![Screenshot 1](assets\Images\escalation.png)
 
 ## Implementation
 Our project is composed of the following core modules:
@@ -97,9 +105,9 @@ Our project is composed of the following core modules:
   - Given the optimized route and packaging data, this tool calculates the environmental impact (carbon emissions).
 
 ### 4. **`categoryTool.py` – Category Classification Agent**
-- **Description**: This agent categorizes items based on predefined categories.
+- **Description**: This agent categorizes query based on predefined categories.
 - **Functionality**:
-  - Processes parcel data and classifies items into categories like electronics, apparel, etc.
+  - Processes query to categorize amongst vision, optimization or general query and route it accordingly.
 
 ### 5. **`customerSentiment.py` – Sentiment Analysis Tool**
 - **Description**: This tool processes customer feedback and determines whether it is positive, neutral, or negative.
@@ -107,14 +115,14 @@ Our project is composed of the following core modules:
   - Analyzes text-based customer feedback, such as complaints or praises.
 
 ### 6. **`escalationAgent.py` – Escalation Agent**
-- **Description**: This agent handles the escalation process if a customer issue is deemed unresolved or urgent.
+- **Description**: This agent handles the escalation process if a customer issue is deemed unresolved or urgent or a negative feedback.
 - **Functionality**:
   - Automatically escalates customer complaints or issues based on predefined rules.
 
 ### 7. **`generalResponseTool.py` – General Response Agent**
 - **Description**: Provides generic responses to customer queries, such as greetings or general information.
 - **Functionality**:
-  - Returns default responses for queries that do not require specific action from other agents.
+  - Returns responses for queries that do not require specific action from other agents.
 
 ### 8. **`llmCall.py` – LLM (Large Language Model) API Interface**
 - **Description**: This file contains the logic for making API calls to the **Azure OpenAI** for processing large language model queries.
@@ -132,9 +140,9 @@ Our project is composed of the following core modules:
   - Takes parcel dimensions and calculates the most space-efficient way to pack them into containers.
 
 ### 11. **`routeNode.py` – Route Node Handler**
-- **Description**: This file manages the nodes in the delivery route and ensures that the parcels are optimally distributed among delivery vehicles.
+- **Description**: This file manages the succeding node route.
 - **Functionality**:
-  - Manages the routing nodes for each delivery vehicle.
+  - Manages the routing nodes based on query category.
 
 ### 12. **`supportUDFs.py` – Utility Functions for Support Agents**
 - **Description**: Contains utility functions that support various agents in the workflow.
@@ -146,11 +154,6 @@ Our project is composed of the following core modules:
 - **Functionality**:
   - Compares images and returns the result of whether a parcel is accepted or rejected.
 
-### 14. **`test.py` – Test Harness**
-- **Description**: This file contains automated tests for verifying the functionality of each agent and tool in the project.
-- **Functionality**:
-  - Runs unit tests for each agent and checks if the expected outputs are generated correctly.
-
 ### 💡 Environment & APIs
 - `.env` file securely stores keys and endpoints for:
   - `AZURE_OPENAI_KEY`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT`
@@ -159,14 +162,16 @@ Our project is composed of the following core modules:
 ## Additional Information
 - **Future Plans**:
   - Build a front-end chatbot interface using Streamlit or Gradio.
+  - Managing threads and storing the results in databases for every batch.
+  - Accept multiple image, different data formats and dynamic column/key names for address etc.
   - Add fallback logic using LangChain for longer conversations.
   - Extend support for live camera input in the Vision Tool.
 - **Known Issues**:
   - Currently supports only base64 input for images.
-  - Assumes all parcels fit within 50x50x50 cm unless changed manually.
+  - Dynamicaly donot accept different no. of images and different file formats for parcels.
+  - Assumes all parcels fit within 50x50x50 unless changed manually.
 - **Acknowledgments**:
   - Thanks to Microsoft for Azure OpenAI access.
   - Thanks to NVIDIA for their state-of-the-art vision models.
-
+  - Openroutesource API to calculate road distance.
 ---
-
